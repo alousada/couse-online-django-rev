@@ -53,17 +53,33 @@
         {% for question in course.question_set.all %}
         <div class="card mb-2">
             <div class="card-header"><h5> {{question.question_text}}</h5></div>
-            {% for choice in question.choice_set.all %}
-                <div class="card-body">
-                    {% if choice.is_correct %}
-                    <p class="form-check-label" for="{{choice.id}}">
-                        {{choice.content}} {{submission.choices.all()}} 
-                    </p>
-                    {% endif %}
-                </div>
-            {% endfor %}
-        </div>
-    {% endfor %}
+                {% with choices_in_submission=submission.choices.all %}
+                    {% for choice in question.choice_set.all %}
+                        {% if choice in choices_in_submission %}
+                            {% if choice.is_correct %}
+                                <p class="form-check-label text-success pl-3" for="{{choice.id}}">
+                                    {{choice.content}} (marked correctly)
+                                </p>
+                            {% else %}
+                                <p class="form-check-label text-danger pl-3" for="{{choice.id}}">
+                                    {{choice.content}} (marked incorrectly)
+                                </p>
+                            {% endif %}
+                        {% else %}
+                            {% if choice.is_correct %}
+                                <p class="form-check-label text-warning pl-3" for="{{choice.id}}">
+                                    {{choice.content}} (should have been marked)
+                                </p>
+                            {% else %}
+                                <p class="form-check-label pl-3" for="{{choice.id}}">
+                                    {{choice.content}}
+                                </p>    
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}    
+            </div>  
+        {% endfor %}
         </div>
     </div>
 </body>

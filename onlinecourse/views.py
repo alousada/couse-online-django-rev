@@ -107,9 +107,10 @@ def submit(request,course_id):
         enrollment=enrollment)
     for choice in submitted_anwsers:
         submission.choices.add(choice)
+    #print(submission.choices.filter(id=choice).)
     context = show_exam_result(course_id, submission)
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
-    
+
 
 def extract_answers(request):
     submitted_anwsers = []
