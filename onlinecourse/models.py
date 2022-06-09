@@ -102,11 +102,9 @@ class Question(models.Model):
     grade = models.IntegerField(default=1)
     question_text = models.TextField()
 
-    def is_get_score(self, selected_ids):
-        #count all the choices that should have been marked
-        all_answers = self.choice_set.filter(is_correct=True).count() 
-        #count all the choices that had been marked correctly
-        selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
+    def is_get_score(self, set_of_selected_choice_ids):
+        all_answers = self.choice_set.filter(is_correct=True).count()
+        selected_correct = self.choice_set.filter(is_correct=True, id__in=set_of_selected_choice_ids).count()
         if all_answers == selected_correct:
             return True
         else:
