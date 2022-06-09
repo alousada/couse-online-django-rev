@@ -16,7 +16,7 @@
             <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                 <li>
-                    <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
+                    <a class="btn btn-link" href="#">{{ user.first_name }} ({{ user.username }})</a>
                     <a class="btn btn-link" href="{% url 'onlinecourse:logout' %}">Logout</a>
                 </li>
                 {% else %}
@@ -24,8 +24,8 @@
                     <form class="form-inline" action="{% url 'onlinecourse:login' %}" method="post">
                         {% csrf_token %}
                         <div class="input-group">
-                            <input type="text" class="form-control" placeholder="Username" name="username" >
-                            <input type="password" class="form-control" placeholder="Username" name="psw" >
+                            <input type="text" class="form-control rounded mr-1" placeholder="Username" name="username" >
+                            <input type="password" class="form-control rounded mr-1" placeholder="Password" name="psw" >
                             <button class="btn btn-primary" type="submit">Login</button>
                             <a class="btn btn-link" href="{% url 'onlinecourse:registration' %}">Sign Up</a>
                         </div>
@@ -38,20 +38,20 @@
 
     <!-- Page content -->
     {% if course_list %}
-        <div class="container">
+        <div class="container mb-3">
             <div class="card-deck mt-2">
                 {% for course in course_list %}
                          <div class="card" style="width: 36rem;">
                           <img class="mx-auto" src="{{MEDIA_URL}}/{{ course.image }}" width="240px" height="240px"
                                alt="Course image">
                           <div class="card-body bg-light">
-                              <h5 class="card-title">{{ course.name }}, <span class="text-success">
-                                  {{ course.total_enrollment}} enrolled</span></h5>
+                              <h5 class="card-title">{{ course.name }} <span class="text-success">
+                                  ({{ course.total_enrollment}} enrolled)</span></h5>
                             <p class="card-text">{{ course.description}}</p>
                             <form action="{% url 'onlinecourse:enroll' course.id %}" method="post">
                                   {% csrf_token %}
-                                  <input class="btn btn-primary"  type="submit"
-                                         value="{% if course.is_enrolled %}Enter{% else %}Enroll{% endif %} ">
+                                  <input class="btn btn-primary btn-block"  type="submit"
+                                         value="{% if course.is_enrolled %}Enter{% elif user.is_authenticated %}Enroll{% else %}Discover{% endif %} ">
                             </form>
                           </div>
                         </div>
