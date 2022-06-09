@@ -96,13 +96,10 @@ def enroll(request, course_id):
         Enrollment.objects.create(user=user, course=course, mode='honor')
         course.total_enrollment += 1
         course.save()
-
     return HttpResponseRedirect(reverse(viewname='onlinecourse:course_details', args=(course.id,)))
 
 def submit(request,course_id):
     submitted_anwsers =  extract_answers(request)
-    print(submitted_anwsers)
-    print(request.POST)
     username = request.user.username
     user = User.objects.get(username=username)
     enrollment = Enrollment.objects.get(user=user,course=course_id)
@@ -110,8 +107,8 @@ def submit(request,course_id):
         enrollment=enrollment)
     for choice in submitted_anwsers:
         submission.choices.add(choice)
-    show_exam_result(course_id, submission)
-    #return HttpResponseRedirect(reverse(viewname='onlinecourse:show_exam_result', args=(course_id,submission)))  
+    context = show_exam_result(course_id, submission)
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
     
 
 def extract_answers(request):
@@ -136,9 +133,9 @@ def show_exam_result(course_id, submission):
         total = total + 1
     grade = correct * 100 / total
     grade = int(grade)
-    print (grade)
     context={'course':course, 'submission':submission,'grade':grade}
-    return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
+    return context
+    
     
 
 

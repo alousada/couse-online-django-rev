@@ -76,12 +76,6 @@ class Lesson(models.Model):
     content = models.TextField()
 
 
-# Enrollment model
-# <HINT> Once a user enrolled a class, an 
-# enrollment entry should be created between 
-# the user and course
-# And we could use the enrollment to track 
-# information such as exam submissions
 class Enrollment(models.Model):
     AUDIT = 'audit'
     HONOR = 'honor'
@@ -103,9 +97,13 @@ class Question(models.Model):
     question_text = models.TextField()
 
     def is_get_score(self, set_of_selected_choice_ids):
-        all_answers = self.choice_set.filter(is_correct=True).count()
-        selected_correct = self.choice_set.filter(is_correct=True, id__in=set_of_selected_choice_ids).count()
-        if all_answers == selected_correct:
+        corrects_in_question = self.choice_set.filter(is_correct=True).count()
+        corrects_in_selected = self.choice_set.filter(is_correct=True, id__in=set_of_selected_choice_ids).count()
+        count_of_selected = self.choice_set.filter(id__in=set_of_selected_choice_ids).count()
+        if (
+            corrects_in_question == corrects_in_selected and
+            corrects_in_question == count_of_selected
+        ):
             return True
         else:
             return False
